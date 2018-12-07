@@ -1,0 +1,137 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context.xsd 
+    http://www.springframework.org/schema/mvc 
+    http://www.springframework.org/schema/mvc/spring-mvc.xsd
+    http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+	http://www.springframework.org/schema/aop 
+   	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
+	xmlns:tx="http://www.springframework.org/schema/tx">
+
+	<context:annotation-config />
+	<context:component-scan
+		base-package="com.vanhy.*" />
+
+	<tx:annotation-driven proxy-target-class="true"
+		transaction-manager="transactionManager" />
+
+
+	<tx:advice id="txAdvice"
+		transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config>
+		<aop:aspect id="myAspect" ref="txAOP">
+			<aop:pointcut
+				expression="execution(* com.vanhy.dao.GenericDao.save*(..))"
+				id="readerDAOOperation" />
+			<aop:before method="beginTx" pointcut-ref="readerDAOOperation"/>
+			<aop:after-returning method="commitTx" pointcut-ref="readerDAOOperation"/>
+			<aop:after-throwing throwing="ex" method="rollbackTx" pointcut-ref="readerDAOOperation"/>
+		</aop:aspect>
+	</aop:config>
+	
+	<aop:config>
+		<aop:pointcut expression="execution(* com.vanhy.dao.GenericDao.*(..))" id="daoOperation"/>
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="daoOperation"/>
+	</aop:config>
+
+	<context:property-placeholder
+		location="classpath:datasources.properties" />
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${mysql.driver}" />
+		<property name="url" value="${mysql.url}" />
+		<property name="username" value="${mysql.user}" />
+		<property name="password" value="${mysql.password}" />
+	</bean>
+
+	<!-- Hibernate session factory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+
+		<!-- Set hibernate's properties -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.c3p0.min_size">1</prop>
+				<prop key="hibernate.c3p0.max_size">150</prop>
+				<prop key="hibernate.c3p0.max_statements">300</prop>
+				<prop key="hibernate.c3p0.timeout">1800</prop>
+				<prop key="hbm2ddl.auto">create</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.current_session_context_class">${current_session_context_class}</prop>
+			</props>
+		</property>
+
+		<!-- Load mapping of model and table -->
+		<property name="mappingResources">
+			<list>
+				<value>com/vanhy/model/hbm/Author.hbm.xml</value>
+				<value>com/vanhy/model/hbm/Book.hbm.xml</value>
+				<value>com/vanhy/model/hbm/Borrow.hbm.xml</value>
+				<value>com/vanhy/model/hbm/Reader.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- Transaction -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- Define scope transaction -->
+	<bean id="baseTransactionProxy" abstract="true"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager" />
+
+		<!-- Define methods which use transaction. If property is PROPAGATION_REQUIRED, 
+			when access db, MUST use transaction -->
+		<property name="transactionAttributes">
+			<props>
+				<prop key="create*">PROPAGATION_REQUIRED</prop>
+				<prop key="save*">PROPAGATION_REQUIRED</prop>
+				<prop key="remove*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="*">PROPAGATION_SUPPORTS,readOnly</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="BookDao" class="com.vanhy.dao.impl.BookDAOImpl">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	
+	<bean id="ReaderDAO" class="com.vanhy.dao.impl.ReaderDAOImpl">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	
+	<bean id="AuthorDAO" class="com.vanhy.dao.impl.AuthorDAOImpl">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+	</bean>
+	
+	<bean id="txAOP" class="com.vanhy.dao.impl.TransactionAOP" />
+	
+	
+</beans>

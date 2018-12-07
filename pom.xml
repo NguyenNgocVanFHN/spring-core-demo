@@ -1,0 +1,131 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.vanhy</groupId>
+	<artifactId>spring-core-demo</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>spring-core-demo</name>
+
+	<properties>
+		<jdk>1.8</jdk>
+		<spring.version>4.3.18.RELEASE</spring.version>
+		<mysql-connector-java>6.0.6</mysql-connector-java>
+		<hibernate.version>5.3.0.Final</hibernate.version>
+		<hibernate-validator>6.0.7.Final</hibernate-validator>
+		<hibernate-common.version>3.2.0.Final</hibernate-common.version>
+		<hibernate-persistence.version>1.0.1.Final</hibernate-persistence.version>
+		<jstl-api>1.2.1</jstl-api>
+		<servlet-api>3.1.0</servlet-api>
+		<jsp-api>2.3.1</jsp-api>
+		<apachetiles.version>3.0.5</apachetiles.version>
+		<dbcp.version>1.4</dbcp.version>
+		<log4j.version>1.2.17</log4j.version>
+		<javassist.version>3.19.0-GA</javassist.version>
+		<aspectj.version>1.6.10</aspectj.version>
+		<log4j.version>1.2.17</log4j.version>
+		<inject.version>1</inject.version>
+		<servletapi.version>2.5</servletapi.version>
+		<slf4j.version>1.7.6</slf4j.version>
+	</properties>
+
+	<dependencies>
+		<!-- Hiberante -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate.common</groupId>
+			<artifactId>hibernate-commons-annotations</artifactId>
+			<version>5.0.1.Final</version>
+		</dependency>
+
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<!-- Database Pool -->
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>${dbcp.version}</version>
+		</dependency>
+
+		<!-- Mysql Connector -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql-connector-java}</version>
+		</dependency>
+
+		<!-- commons-lang3 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.5</version>
+		</dependency>
+
+		<!-- AspectJ -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+
+		<!-- @Inject -->
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>${inject.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>springmvc</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>${jdk}</source>
+					<target>${jdk}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

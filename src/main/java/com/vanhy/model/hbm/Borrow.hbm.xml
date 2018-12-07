@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 6, 2018 2:52:06 PM by Hibernate Tools 4.3.5.Final -->
+<hibernate-mapping package="com.vanhy.model">
+    <class name="Borrow" table="borrow" catalog="db_student" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="book" class="Book" fetch="select">
+            <column name="id_book" not-null="true" />
+        </many-to-one>
+        <many-to-one name="reader" class="Reader" fetch="select">
+            <column name="id_reader" not-null="true" />
+        </many-to-one>
+        <property name="borrowDate" type="date">
+            <column name="borrow_date" length="10" not-null="true" />
+        </property>
+        <property name="state" type="byte">
+            <column name="state" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
